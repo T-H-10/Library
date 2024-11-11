@@ -5,51 +5,55 @@ namespace library.Services
 {
     public class OrderService
     {
-        private List<Order> orders = new List<Order>();    
-        public List<Order> GeOrders()
+        public List<Order> GetOrders() => DataContext.Orders;
+        public Order GetOrder(int code) =>
+            DataContext.Orders.Find(order => order.Code == code);
+        //{
+        //    foreach (var order in DataContext.Orders)
+        //    {
+        //        if (order.Code == code)
+        //            return order;
+        //    }
+        //    return null;
+        //}
+        public bool AddOrder([FromBody] Order order)
         {
-            return orders;
-        }
-        public Order GetOrder(int code)
-        {
-            foreach (var order in orders)
-            {
-                if (order.Code == code)
-                    return order;
-            }
-            return null;
-        }
-        public bool PostOrder([FromBody] Order order)
-        {
-            if (order == null)
-                return false;
-            orders.Add(order);
+            if (order == null) return false;
+            DataContext.Orders.Add(order);
             return true;
         }
-        public bool PutOrder(int code, [FromBody] Order order)
+        public bool UpdateOrder(int code, [FromBody] Order order)
         {
             if (order == null) { return false; }
-            for (int i = 0; i < orders.Count; i++)
+            for (int i = 0; i < DataContext.Orders.Count; i++)
             {
-                if (orders[i].Code == code)
+                if (DataContext.Orders[i].Code == code)
                 {
-                    orders[i] = order;
+                    DataContext.Orders[i].BookName = order.BookName;
+                    DataContext.Orders[i].BookCode = order.BookCode;
+                    DataContext.Orders[i].PublishName = order.BookName;
+                    DataContext.Orders[i].Tel = order.Tel;
+                    DataContext.Orders[i].OrderDate = order.OrderDate;
+                    DataContext.Orders[i].Copies = order.Copies;
+                    DataContext.Orders[i].Price = order.Price;
+                    DataContext.Orders[i].ShippingPrice = order.ShippingPrice;
                     return true;
                 }
             }
             return false;
         }
-        public bool DeleteOrder(int code)
-        {
-            for (int i = 0; i < orders.Count; i++)
-            {
-                if (orders[i].Code == code)
-                {
-                    orders.RemoveAt(i);
-                    return true;
-                }
-            }
-            return false;
-        }
+        public bool DeleteOrder(int code) =>
+             DataContext.Orders.Remove(GetOrder(code));
+        //{
+        //    for (int i = 0; i < DataContext.Orders.Count; i++)
+        //    {
+        //        if (DataContext.Orders[i].Code == code)
+        //        {
+        //            DataContext.Orders.RemoveAt(i);
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
     }
 }

@@ -1,88 +1,61 @@
 ﻿using library.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Metrics;
+using System.Text.RegularExpressions;
 
 namespace library.Services
 {
     public class MemberService
     {
-        private List<Member> members = new List<Member>() {
-            new Member() {
-                    Code = 100,
-                    Name = "moshe",
-                    Id = "123456789",
-                    City = "P.T.",
-                    Address = "Rozovski 1",
-                    Children = 5,
-                    Tel = "03-9336497",
-                    Status=Statuses.active,
-                    JoiningDate = new DateTime(2024, 10, 30)
-                    },new Member()
-                    {
-                    Code = 101,
-                    Name = "aharon",
-                    Id = "123456798",
-                    City = "P.T.",
-                    Address = "Rozovski 10",
-                    Children = 3,
-                    Tel = "03-9335197",
-                    Status=Statuses.active,
-                    JoiningDate = new DateTime(2024, 10, 31)
-                    },new Member()
-                    {
-                    Code = 102,
-                    Name = "levi",
-                    Id = "123546798",
-                    City = "P.T.",
-                    Address = "Meshorer 3",
-                    Children = 2,
-                    Tel = "03-9093297",
-                    Status=Statuses.active,
-                    JoiningDate = new DateTime(2024, 10, 31)
-                    }
-            };
-        public List<Member> GetMembers()
-        {
-            return members;
-        }
-        public Member GetMember(string id)
-        {
-            foreach (var member in members)
-            {
-                if (member.Id == id)
-                    return member;
-            }
-            return null;//--------------
-        }
-        public bool PostMember([FromBody] Member member)
+        public List<Member> GetMembers() => DataContext.Members;
+        public Member GetMemberById(string id) =>
+            DataContext.Members.Find(member => member.Id == id);
+        //{
+        //    foreach (var member in DataContext.Members)
+        //    {
+        //        if (member.Id == id)
+        //            return member;
+        //    }
+        //    return null;//--------------
+        //}
+        public bool AddMember([FromBody] Member member)
         {
             if (member == null)
                 return false;
-            members.Add(member);
+            DataContext.Members.Add(member);
             return true;
         }
-        public bool PutMember(string id, [FromBody] Member member)
+        public bool UpdateMember(int code, [FromBody] Member member)
         {
-            if (id == null) { return false; }
-            if(member==null) { return false; }
-            for (int i = 0; i < members.Count; i++)
+            //if (code == null) { return false; }
+            if (member == null) { return false; }
+            for (int i = 0; i < DataContext.Members.Count; i++)
             {
-                if (members[i].Id == id)
+                if (DataContext.Members[i].Code == code)
                 {
-                    members[i] = member;
+                    //DataContext.Members[i].Code = member.Code;
+                    DataContext.Members[i].Name = member.Name;
+                    DataContext.Members[i].Id = member.Id;
+                    DataContext.Members[i].City = member.City;
+                    DataContext.Members[i].Address = member.Address;
+                    DataContext.Members[i].Tel = member.Tel;
+                    DataContext.Members[i].Children = member.Children;
+                    DataContext.Members[i].Status = member.Status;
+                    DataContext.Members[i].JoiningDate = member.JoiningDate;
                     return true;
                 }
             }
             return false;
         }
-        public bool DeleteMember(string id)
+        public bool DeleteMember(int code)
+        //DataContext.Members.Remove(GetMemberById(id));
         {
-            if(id == null) { return false; }
-            for (int i = 0; i < members.Count; i++)
+            //if (code == null) { return false; }
+            for (int i = 0; i < DataContext.Members.Count; i++)
             {
-                if (members[i].Id == id)
+                if (DataContext.Members[i].Code == code)
                 {
-                    members.RemoveAt(i);
+                    DataContext.Members.RemoveAt(i);
                     return true;
                 }
             }

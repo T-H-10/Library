@@ -16,8 +16,8 @@ namespace library.Controllers
         public ActionResult<List<Lending>> Get()
         {
             List<Lending> result = _lendingService.GetLendings();
-            if(result == null) { return NoContent(); }//-----
-            return Ok(result);
+            if(result == null) { return NotFound(); }
+            return result;
         }
 
         // GET api/<LendingsController>/5
@@ -26,21 +26,21 @@ namespace library.Controllers
         {
             Lending result=_lendingService.GetLending(code);
             if(result == null) { return NotFound(); };
-            return Ok(result);
+            return result;
         }
 
         // POST api/<LendingsController>
         [HttpPost]
         public ActionResult<bool> Post([FromBody] Lending lending)
         {
-            return _lendingService.PostLending(lending);
+            return _lendingService.AddLending(lending);
         }
 
         // PUT api/<LendingsController>/5
         [HttpPut("{id}")]
         public ActionResult<bool> Put(int code, [FromBody] Lending lending)
         {
-            return _lendingService.PutLending(code, lending);
+            return _lendingService.UpdateLending(code, lending);
         }
 
         // DELETE api/<LendingsController>/5

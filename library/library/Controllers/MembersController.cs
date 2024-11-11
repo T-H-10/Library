@@ -10,15 +10,18 @@ namespace library.Controllers
     [ApiController]
     public class MembersController : ControllerBase
     {
-        readonly MemberService _memberService= new MemberService();
-        
+        readonly MemberService _memberService = new MemberService();
+        public MembersController()
+        {
+            _memberService = new MemberService();
+        }
         // GET: api/<MembersController>
         [HttpGet]
         public ActionResult<List<Member>> Get()
         {
             List<Member> members = _memberService.GetMembers();
             if (members == null) { return NotFound(); }
-            return Ok(members);
+            return members;
         }
 
         // GET api/<MembersController>/5
@@ -26,32 +29,28 @@ namespace library.Controllers
         public ActionResult<Member> GetById(string id)
         {
             if (id == null) { return NotFound(); }
-            Member result=_memberService.GetMember(id);
-            if(result == null) { return NotFound(); }
-            return Ok(result);
+            Member result = _memberService.GetMemberById(id);
+            if (result == null) { return NotFound(); }
+            return result;
         }
 
         // POST api/<MembersController>
         [HttpPost]
         public ActionResult<bool> Post([FromBody] Member member)
         {
-            return _memberService.PostMember(member);
+            return _memberService.AddMember(member);
         }
-
         // PUT api/<MembersController>/5
         [HttpPut("{id}")]
-        public ActionResult<bool> Put(string id, [FromBody] Member member)
+        public ActionResult<bool> Put(int code, [FromBody] Member member)
         {
-            return _memberService.PutMember(id, member);
+            return _memberService.UpdateMember(code, member);
         }
-
         // DELETE api/<MembersController>/5
         [HttpDelete("{id}")]
-        public ActionResult<bool> Delete(string id)
+        public ActionResult<bool> Delete(int code)
         {
-            if(_memberService.DeleteMember(id))
-                return Ok();
-            return NotFound();
+            return _memberService.DeleteMember(code);
         }
     }
 }

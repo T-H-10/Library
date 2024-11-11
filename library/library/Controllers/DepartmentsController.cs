@@ -16,8 +16,8 @@ namespace library.Controllers
         public ActionResult<List<Department>> Get()
         {
             List<Department> result=_departmentService.GetDepartments();
-            if(result == null) { return NoContent(); }//---
-            return Ok(result);
+            if(result == null) { return NotFound(); }
+            return result;
         }
 
         // GET api/<DepartmentsController>/5
@@ -26,21 +26,21 @@ namespace library.Controllers
         {
             Department result= _departmentService.GetDepartment(code);
             if (result == null) { return NotFound(); }
-            return Ok(result);
+            return result;
         }
 
         // POST api/<DepartmentsController>
         [HttpPost]
         public ActionResult<bool> Post([FromBody] Department department)
         {
-            return _departmentService.PostDepartment(department);
+            return _departmentService.AddDepartment(department);
         }
 
         // PUT api/<DepartmentsController>/5
         [HttpPut("{id}")]
         public ActionResult<bool> Put(int code, [FromBody] Department department)
         {
-            return _departmentService.PutDepartment(code, department);
+            return _departmentService.UpdateDepartment(code, department);
         }
 
         // DELETE api/<DepartmentsController>/5

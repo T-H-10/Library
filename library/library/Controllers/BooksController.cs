@@ -17,7 +17,7 @@ namespace library.Controllers
         {
             List<Book> result=_bookService.GetBooks();
             if(result == null) { return NotFound(); }
-            return Ok(result);
+            return result;
         }
 
         // GET api/<BooksController>/5
@@ -26,21 +26,21 @@ namespace library.Controllers
         {
             Book result= _bookService.GetBook(code);
             if (result == null) { return NotFound(); }
-            return Ok(result);
+            return result;
         }
 
         // POST api/<BooksController>
         [HttpPost]
         public ActionResult<bool> Post([FromBody] Book book)
         {
-            return _bookService.PostBook(book);
+            return _bookService.AddBook(book);
         }
 
         // PUT api/<BooksController>/5
         [HttpPut("{code}")]
         public ActionResult<bool> Put(int code, [FromBody] Book book)
         {
-            return _bookService.PutBook(code, book);
+            return _bookService.UpdateBook(code, book);
         }
 
         // DELETE api/<BooksController>/5

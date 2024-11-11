@@ -6,7 +6,8 @@
     }
     public class Book
     {
-        public int Code { get; set; }
+        public static int code = 1000;
+        public int Code { get; }
         public string Author { get; set; }
         public string Name { get; set; }
         public int DepartmentCode { get; set; }
@@ -17,6 +18,11 @@
         public int CopyNum { get; set; }
         public BookStatus Status { get; set; }
         public int DaysToBorrow { get; set; }
-        public DateOnly BuyingDate { get; set; }
+        public DateTime BuyingDate { get; set; }
+
+        public Book()
+        {
+            Code = code++;
+        }
     }
 }

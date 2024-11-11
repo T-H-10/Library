@@ -6,7 +6,8 @@
     }
     public class Member
     {
-        public int Code { get; set; }
+        public static int code=100;
+        public int Code { get; }
         public string Name { get; set; }
         public string Id { get; set; }
         public string City { get; set; }
@@ -16,7 +17,10 @@
         public Statuses Status { get; set; }
         //public int MaxBooks { get; set; }
         public DateTime JoiningDate { get; set; }
-
+        public Member()
+        {
+            Code = code++;
+        }
 
     }
 }
