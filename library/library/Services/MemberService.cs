@@ -7,9 +7,18 @@ namespace library.Services
 {
     public class MemberService
     {
-        public List<Member> GetMembers() => DataContext.Members;
-        public Member GetMemberById(string id) =>
-            DataContext.Members.Find(member => member.Id == id);
+        readonly IDataContext _dataContext;
+        public MemberService(IDataContext dataContext)
+        {
+            _dataContext = dataContext;
+        }
+        public List<Member> GetMembers() => _dataContext.LoadMembers();
+        public Member GetMemberById(string id)
+        {
+            List<Member> members = _dataContext.LoadMembers();
+            if (members == null) return null;
+            return members.Find(member => member.Id == id);
+        }
         //{
         //    foreach (var member in DataContext.Members)
         //    {
@@ -20,43 +29,44 @@ namespace library.Services
         //}
         public bool AddMember([FromBody] Member member)
         {
-            if (member == null)
-                return false;
-            DataContext.Members.Add(member);
-            return true;
+            if (member == null) return false;
+            List<Member> members = _dataContext.LoadMembers();
+            members.Add(member);
+            return _dataContext.SaveMembers(members);
         }
         public bool UpdateMember(int code, [FromBody] Member member)
         {
-            //if (code == null) { return false; }
             if (member == null) { return false; }
-            for (int i = 0; i < DataContext.Members.Count; i++)
+            List<Member> members = _dataContext.LoadMembers();
+            for (int i = 0; i < members.Count; i++)
             {
-                if (DataContext.Members[i].Code == code)
+                if (members[i].Code == code)
                 {
                     //DataContext.Members[i].Code = member.Code;
-                    DataContext.Members[i].Name = member.Name;
-                    DataContext.Members[i].Id = member.Id;
-                    DataContext.Members[i].City = member.City;
-                    DataContext.Members[i].Address = member.Address;
-                    DataContext.Members[i].Tel = member.Tel;
-                    DataContext.Members[i].Children = member.Children;
-                    DataContext.Members[i].Status = member.Status;
-                    DataContext.Members[i].JoiningDate = member.JoiningDate;
-                    return true;
+                    members[i].Name = member.Name;
+                    members[i].Id = member.Id;
+                    members[i].City = member.City;
+                    members[i].Address = member.Address;
+                    members[i].Tel = member.Tel;
+                    members[i].Children = member.Children;
+                    members[i].Status = member.Status;
+                    members[i].JoiningDate = member.JoiningDate;
+                    return _dataContext.SaveMembers(members);
                 }
             }
             return false;
         }
-        public bool DeleteMember(int code)
+        public bool DeleteMember(string id)
         //DataContext.Members.Remove(GetMemberById(id));
         {
-            //if (code == null) { return false; }
-            for (int i = 0; i < DataContext.Members.Count; i++)
+            if (id == null) { return false; }
+            List<Member> members = _dataContext.LoadMembers();
+            for (int i = 0; i < members.Count; i++)
             {
-                if (DataContext.Members[i].Code == code)
+                if (members[i].Id == id)
                 {
-                    DataContext.Members.RemoveAt(i);
-                    return true;
+                    members.RemoveAt(i);
+                    return _dataContext.SaveMembers(members);
                 }
             }
             return false;

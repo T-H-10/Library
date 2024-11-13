@@ -109,3 +109,4 @@ C:\Users\user1\Desktop\תכנות\שנה ב\netcore\ספריה\library\libraryTe
 C:\Users\user1\Desktop\תכנות\שנה ב\netcore\ספריה\library\libraryTests\obj\Debug\net6.0\libraryTests.pdb
 C:\Users\user1\Desktop\תכנות\שנה ב\netcore\ספריה\library\libraryTests\obj\Debug\net6.0\libraryTests.genruntimeconfig.cache
 C:\Users\user1\Desktop\תכנות\שנה ב\netcore\ספריה\library\libraryTests\obj\Debug\net6.0\ref\libraryTests.dll
+C:\Users\user1\Desktop\תכנות\שנה ב\netcore\ספריה\library\libraryTests\bin\Debug\net6.0\Data\membersData.json

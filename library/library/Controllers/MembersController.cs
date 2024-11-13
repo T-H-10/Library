@@ -10,11 +10,15 @@ namespace library.Controllers
     [ApiController]
     public class MembersController : ControllerBase
     {
-        readonly MemberService _memberService = new MemberService();
-        public MembersController()
+        readonly MemberService _memberService;
+        public MembersController(MemberService memberService)
         {
-            _memberService = new MemberService();
+            _memberService = memberService;
         }
+        //public MembersController()
+        //{
+        //    _memberService = new MemberService(new DataContext());
+        //}
         // GET: api/<MembersController>
         [HttpGet]
         public ActionResult<List<Member>> Get()
@@ -48,9 +52,9 @@ namespace library.Controllers
         }
         // DELETE api/<MembersController>/5
         [HttpDelete("{id}")]
-        public ActionResult<bool> Delete(int code)
+        public ActionResult<bool> Delete(string id)
         {
-            return _memberService.DeleteMember(code);
+            return _memberService.DeleteMember(id);
         }
     }
 }

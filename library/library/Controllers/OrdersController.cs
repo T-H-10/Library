@@ -10,7 +10,7 @@ namespace library.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        readonly OrderService _orderService = new OrderService();
+        readonly OrderService _orderService = new OrderService(new DataContext());
         // GET: api/<OrdersController>
         [HttpGet]
         public ActionResult<List<Order>> Get()

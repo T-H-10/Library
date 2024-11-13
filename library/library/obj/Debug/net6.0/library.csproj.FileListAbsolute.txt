@@ -30,3 +30,4 @@ C:\Users\user1\Desktop\תכנות\שנה ב\netcore\ספריה\library\library\o
 C:\Users\user1\Desktop\תכנות\שנה ב\netcore\ספריה\library\library\obj\Debug\net6.0\library.pdb
 C:\Users\user1\Desktop\תכנות\שנה ב\netcore\ספריה\library\library\obj\Debug\net6.0\library.genruntimeconfig.cache
 C:\Users\user1\Desktop\תכנות\שנה ב\netcore\ספריה\library\library\obj\Debug\net6.0\ref\library.dll
+C:\Users\user1\Desktop\תכנות\שנה ב\netcore\ספריה\library\library\bin\Debug\net6.0\data\membersData.json

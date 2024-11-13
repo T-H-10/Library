@@ -5,10 +5,19 @@ namespace library.Services
 {
     public class LendingService
     {
-
-        public List<Lending> GetLendings() => DataContext.Lendings;
-        public Lending GetLending(int code) =>
-            DataContext.Lendings.Find(lending => lending.Code == code);
+        readonly IDataContext _dataContext;
+        public LendingService(IDataContext dataContext)
+        {
+            _dataContext = dataContext;
+        }
+        public List<Lending> GetLendings() => _dataContext.LoadLendings();
+        public Lending GetLending(int code)
+        {
+            List<Lending> lendings = _dataContext.LoadLendings();
+            if(lendings == null) { return null; }
+            return lendings.Find(lending => lending.Code == code);
+        }
+            
         //{
         //    foreach (var lending in DataContext.Lendings)
         //    {
@@ -20,37 +29,40 @@ namespace library.Services
         public bool AddLending([FromBody] Lending lending)
         {
             if (lending == null) return false;
-            DataContext.Lendings.Add(lending);
-            return true;
+            List<Lending> lendings = _dataContext.LoadLendings();
+            lendings.Add(lending);
+            return _dataContext.SaveLendings(lendings);
         }
         public bool UpdateLending(int code, [FromBody] Lending lending)
         {
             if (lending == null) { return false; }
-            for (int i = 0; i < DataContext.Lendings.Count; i++)
+            List<Lending> lendings = _dataContext.LoadLendings();
+            for (int i = 0; i < lendings.Count; i++)
             {
-                if (DataContext.Lendings[i].Code == code)
+                if (lendings[i].Code == code)
                 {
-                    DataContext.Lendings[i].Book = lending.Book;
-                    DataContext.Lendings[i].Member = lending.Member;
-                    DataContext.Lendings[i].LendingDate = lending.LendingDate;
-                    DataContext.Lendings[i].ReturningDate = lending.ReturningDate;
-                    return true;
+                    lendings[i].Book = lending.Book;
+                    lendings[i].Member = lending.Member;
+                    lendings[i].LendingDate = lending.LendingDate;
+                    lendings[i].ReturningDate = lending.ReturningDate;
+                    return _dataContext.SaveLendings(lendings);
                 }
             }
             return false;
         }
-        public bool DeleteLending(int code) =>
-            DataContext.Lendings.Remove(GetLending(code));
-        //{
-        //    for (int i = 0; i < DataContext.Lendings.Count; i++)
-        //    {
-        //        if (DataContext.Lendings[i].Code == code)
-        //        {
-        //            DataContext.Lendings.RemoveAt(i);
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
+        public bool DeleteLending(int code)
+        //DataContext.Lendings.Remove(GetLending(code));
+        {
+            List<Lending> lendings = _dataContext.LoadLendings();
+            for (int i = 0; i < lendings.Count; i++)
+            {
+                if (lendings[i].Code == code)
+                {
+                    lendings.RemoveAt(i);
+                    return _dataContext.SaveLendings(lendings);
+                }
+            }
+            return false;
+        }
     }
 }

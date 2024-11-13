@@ -10,7 +10,7 @@ namespace library.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        readonly BookService _bookService= new BookService();
+        readonly BookService _bookService= new BookService(new DataContext());
         // GET: api/<BooksController>
         [HttpGet]
         public ActionResult<List<Book>> Get()

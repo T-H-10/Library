@@ -10,7 +10,7 @@ namespace library.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
-        readonly DepartmentService _departmentService=new DepartmentService();
+        readonly DepartmentService _departmentService=new DepartmentService(new DataContext());
         // GET: api/<DepartmentsController>
         [HttpGet]
         public ActionResult<List<Department>> Get()

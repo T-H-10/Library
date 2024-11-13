@@ -10,7 +10,7 @@ namespace library.Controllers
     [ApiController]
     public class LendingsController : ControllerBase
     {
-        readonly LendingService _lendingService= new LendingService();
+        readonly LendingService _lendingService= new LendingService(new DataContext());
         // GET: api/<LendingsController>
         [HttpGet]
         public ActionResult<List<Lending>> Get()

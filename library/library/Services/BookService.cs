@@ -5,50 +5,61 @@ namespace library.Services
 {
     public class BookService
     {
-
-        public List<Book> GetBooks() => DataContext.Books;
-        public Book GetBook(int code) => 
-            DataContext.Books.Find(book => book.Code == code);
+        readonly IDataContext _dataContext;
+        public BookService(IDataContext dataContext)
+        {
+            _dataContext = dataContext;
+        }
+        public List<Book> GetBooks() => _dataContext.LoadBooks();
+        public Book GetBook(int code)
+        {
+            List<Book> books = _dataContext.LoadBooks();
+            if (books == null) return null;
+            return books.Find(book => book.Code == code);
+        }
         public bool AddBook([FromBody] Book book)
         {
+            List<Book> books = _dataContext.LoadBooks();
             if (book == null) return false;
-            DataContext.Books.Add(book);
-            return true;
+            books.Add(book);
+            return _dataContext.SaveBooks(books);
         }
         public bool UpdateBook(int code, [FromBody] Book book)
         {
-            if (book == null) return false;
-            for (int i = 0; i < DataContext.Books.Count; i++)
+            List<Book> books = _dataContext.LoadBooks();
+            if (book == null || books==null) return false;
+            for (int i = 0; i < books.Count; i++)
             {
-                if (DataContext.Books[i].Code == code)
+                if (books[i].Code == code)
                 {
-                    DataContext.Books[i].Author = book.Author;
-                    DataContext.Books[i].Name = book.Name;
-                    DataContext.Books[i].DepartmentCode = book.DepartmentCode;
-                    DataContext.Books[i].ColumnNum = book.ColumnNum;
-                    DataContext.Books[i].ShelfNum = book.ShelfNum;
-                    DataContext.Books[i].Pages = book.Pages;
-                    DataContext.Books[i].Copies = book.Copies;
-                    DataContext.Books[i].CopyNum = book.CopyNum;
-                    DataContext.Books[i].Status = book.Status;
-                    DataContext.Books[i].DaysToBorrow = book.DaysToBorrow;
-                    DataContext.Books[i].BuyingDate = book.BuyingDate;
-                    return true;
+                    books[i].Author = book.Author;
+                    books[i].Name = book.Name;
+                    books[i].DepartmentCode = book.DepartmentCode;
+                    books[i].ColumnNum = book.ColumnNum;
+                    books[i].ShelfNum = book.ShelfNum;
+                    books[i].Pages = book.Pages;
+                    books[i].Copies = book.Copies;
+                    books[i].CopyNum = book.CopyNum;
+                    books[i].Status = book.Status;
+                    books[i].DaysToBorrow = book.DaysToBorrow;
+                    books[i].BuyingDate = book.BuyingDate;
+                    return _dataContext.SaveBooks(books);
                 }
             }
             return false;
         }
-        public bool DeleteBook(int code) => DataContext.Books.Remove(GetBook(code));
-        //{
-        //    for (int i = 0; i < DataContext.Books.Count; i++)
-        //    {
-        //        if (DataContext.Books[i].Code == code)
-        //        {
-        //            DataContext.Books.RemoveAt(i);
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
+        public bool DeleteBook(int code) //=> DataContext.Books.Remove(GetBook(code));
+        {
+            List<Book> books = _dataContext.LoadBooks();
+            for (int i = 0; i < books.Count; i++)
+            {
+                if (books[i].Code == code)
+                {
+                    books.RemoveAt(i);
+                    return _dataContext.SaveBooks(books);
+                }
+            }
+            return false;
+        }
     }
 }

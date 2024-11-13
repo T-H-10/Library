@@ -5,9 +5,18 @@ namespace library.Services
 {
     public class DepartmentService
     {
-        public List<Department> GetDepartments() => DataContext.Departments;
-        public Department GetDepartment(int code) =>
-            DataContext.Departments.Find(department => department.Code == code);
+        readonly IDataContext _dataContext;
+        public DepartmentService(IDataContext dataContext)
+        {
+            _dataContext = dataContext;
+        }
+        public List<Department> GetDepartments() => _dataContext.LoadDepartments();
+        public Department GetDepartment(int code)
+        {
+            List<Department> departments = _dataContext.LoadDepartments();
+            if(departments == null) { return null; }
+            return departments.Find(department => department.Code == code);
+        }
         //{
         //    foreach (var department in DataContext.Departments)
         //    {
@@ -19,36 +28,39 @@ namespace library.Services
         public bool AddDepartment([FromBody] Department department)
         {
             if (department == null) return false;
-            DataContext.Departments.Add(department);
-            return true;
+            List<Department> departments = _dataContext.LoadDepartments();
+            departments.Add(department);
+            return _dataContext.SaveDepartments(departments);
         }
         public bool UpdateDepartment(int code, [FromBody] Department department)
         {
             if (department == null) { return false; }
-            for (int i = 0; i < DataContext.Departments.Count; i++)
+            List<Department> departments = _dataContext.LoadDepartments();
+            for (int i = 0; i < departments.Count; i++)
             {
-                if (DataContext.Departments[i].Code == code)
+                if (departments[i].Code == code)
                 {
-                    DataContext.Departments[i].Name = department.Name;
-                    DataContext.Departments[i].Description = department.Description;
-                    DataContext.Departments[i].Age = department.Age;
-                    return true;
+                    departments[i].Name = department.Name;
+                    departments[i].Description = department.Description;
+                    departments[i].Age = department.Age;
+                    return _dataContext.SaveDepartments(departments);
                 }
             }
             return false;
         }
-        public bool DeleteDepartment(int code)=>
-            DataContext.Departments.Remove(GetDepartment(code));
-        //{
-        //    for (int i = 0; i < DataContext.Departments.Count; i++)
-        //    {
-        //        if (DataContext.Departments[i].Code == code)
-        //        {
-        //            DataContext.Departments.RemoveAt(i);
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
+        public bool DeleteDepartment(int code)
+        // DataContext.Departments.Remove(GetDepartment(code));
+        {
+            List<Department> departments = _dataContext.LoadDepartments();
+            for (int i = 0; i < departments.Count; i++)
+            {
+                if (departments[i].Code == code)
+                {
+                    departments.RemoveAt(i);
+                    return _dataContext.SaveDepartments(departments);
+                }
+            }
+            return false;
+        }
     }
 }
